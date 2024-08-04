@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { auth, db, getDoc, doc } from '../Config/Config'
+import { auth, db, getDoc, doc, setDoc } from '../Config/Config'
 import { CartContext } from '../Global/CartContext'
 import { Navbar } from './Navbar';
 import { useNavigate } from 'react-router-dom'
@@ -40,14 +40,19 @@ export const Cashout = (props) => {
             if (user) {
                 const date = new Date();
                 const time = date.getTime();
-                db.collection('Buyer-info ' + user.uid).doc('_' + time).set({
+                const productIds = shoppingCart.map(item => item.ProductID);
+                const orderData = {
                     BuyerName: name,
                     BuyerEmail: email,
                     BuyerCell: cell,
                     BuyerAddress: address,
                     BuyerPayment: totalPrice,
-                    BuyerQuantity: totalQty
-                }).then(() => {
+                    BuyerQuantity: totalQty,
+                    productIds: productIds
+                };
+
+                setDoc(doc(db, 'Orders', user.uid + time), orderData)
+                .then(() => {
                     setCell('');
                     setAddress('');
                     dispatch({ type: 'EMPTY' })
@@ -65,7 +70,7 @@ export const Cashout = (props) => {
             <Navbar user={props.user} />
             <div className='container'>
                 <br />
-                <h2>Cashout Details</h2>
+                <h2>Checkout Details</h2>
                 <br />
                 {successMsg && <div className='success-msg'>{successMsg}</div>}
                 <form autoComplete="off" className='form-group' onSubmit={cashoutSubmit}>

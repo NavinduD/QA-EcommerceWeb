@@ -1,111 +1,77 @@
-import React, { useState } from 'react'
-import { ref, db,setDoc,collection,doc, storage } from '../Config/Config'
-import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { useNavigate } from 'react-router-dom';
-import { updateDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { db, doc, updateDoc, getDoc } from '../Config/Config';
+import { TextField, Button, Box } from '@mui/material';
 
-export const EditProducts = (product) => {
+export const EditProduct = () => {
+  const [productData, setProductData] = useState({});
+  const navigate = useNavigate();
+  const { productId } = useParams(); 
 
-    const [productName, setProductName] = useState(product.ProductName);
-    const [productPrice, setProductPrice] = useState(product.ProductPrice);
-    const [productImg, setProductImg] = useState(null);
-    const [error, setError] = useState('');
+  useEffect(() => {
+    const fetchProductData = async () => {
+      const productRef = doc(db, 'Products', productId);
+      const productDocSnapshot = await getDoc(productRef); 
 
-    const types = ['image/png', 'image/jpeg']; 
+      // Check if product exists before accessing data
+      if (productDocSnapshot.exists) {
+        setProductData(productDocSnapshot.data());
+        console.log(productDocSnapshot.data());
+      } else {
+        console.error('Product not found!');
+        navigate('/seller-dashboard');
+      }
+    };
+    fetchProductData();
+  }, [productId, navigate]);
 
-    const navigate = useNavigate();
 
-    const productImgHandler = (e) => {
-        let selectedFile = e.target.files[0];
-        if (selectedFile && types.includes(selectedFile.type)) {
-            setProductImg(selectedFile);
-            setError('')
-        }
-        else {
-            setProductImg(null);
-            setError('Please select a valid image type (jpg or png)');
-        }
-    }
+  const handleChange = (event) => {
+    setProductData({ ...productData, [event.target.name]: event.target.value });
+  };
 
-    // Edit product
-    const editProduct = async (e) => {
-        e.preventDefault();
-      
-        try {
-          // Upload product image to storage
-          const storageRef = ref(storage, `product-images/${productImg.name}`);
-          const uploadTask = uploadBytesResumable(storageRef, productImg);
-      
-          // Register observers for upload progress and completion
-          uploadTask.on('state_changed', 
-            (snapshot) => {
-              // Observe state change events and update progress
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log('Upload is ' + progress + '% done');
-            },
-            (error) => {
-              // Handle unsuccessful uploads
-              console.error('Upload failed:', error);
-              setError(error.message);
-            },
-            async () => {
-              // Handle successful upload completion
-              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-              console.log('File available at', downloadURL);
-      
-              // Add product data to Firestore
-              const productRef = collection(db, 'Products');
-              const productData = {
-                ProductName: productName,
-                ProductPrice: Number(productPrice),
-              };
+  const handleSaveProduct = async () => {
+    const productRef = doc(db, 'Products', productId);
+    await updateDoc(productRef, productData);
+    navigate('/seller-dashboard');
+  };
 
-              // Update ProductImg only if a new image is selected
-              if (productImg) {
-                productData.ProductImg = downloadURL;
-              }
+  const handleCancel = () => {
+    navigate('/seller-dashboard');
+  };
 
-              await updateDoc(doc(productRef, product.id), productData);
-      
-              // Clear form fields and error message on success
-              setProductName('');
-              setProductPrice(0);
-              setProductImg('');
-              setError('');
-              document.getElementById('file').value = '';
+  return (
+    <div style={{ padding: '0 200px' }}>
+      <h1>Edit Product</h1>
+      <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
+        <TextField
+          id="productName"
+          name="ProductName"
+          label="Product Name"
+          variant="outlined"
+          value={productData.ProductName || ''}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          id="productPrice"
+          name="ProductPrice"
+          label="Product Price (Rs.)"
+          variant="outlined"
+          type="number"
+          value={productData.ProductPrice || ''}
+          onChange={handleChange}
+          required
+        />
 
-              navigate('/admin-dashboard');
-            }
-          );
-        } catch (err) {
-          console.error('Error adding product:', err);
-          setError(err.message);
-        }
-      };
-      
-      
+        <Button variant="contained" color="primary" onClick={handleSaveProduct}>
+          Save
+        </Button>
+        <Button variant="contained" color="secondary" onClick={handleCancel}>
+          Cancel
+        </Button>
+      </Box>
+    </div>
+  );
+};
 
-    return (
-        <div className='container'>
-            <br />
-            <h2>EDIT PRODUCTS</h2>
-            <hr />
-            <form autoComplete="off" className='form-group' onSubmit={editProduct}>
-                <label htmlFor="product-name">Product Name</label>
-                <input type="text" className='form-control' required
-                    onChange={(e) => setProductName(e.target.value)} value={productName} />
-                <br />
-                <label htmlFor="product-price">Product Price</label>
-                <input type="number" className='form-control' required
-                    onChange={(e) => setProductPrice(e.target.value)} value={productPrice} />
-                <br />
-                <label htmlFor="product-img">Product Image</label>
-                <input type="file" className='form-control' id="file" required
-                    onChange={productImgHandler} />
-                <br />
-                <button type="submit" className='btn btn-success btn-md mybtn'>Save</button>
-            </form>
-            {error && <span className='error-msg'>{error}</span>}
-        </div>
-    )
-}

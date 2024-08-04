@@ -99,7 +99,7 @@ export const AddProducts = () => {
                 <input type="file" className='form-control' id="file" required
                     onChange={productImgHandler} />
                 <br />
-                <button type="submit" className='btn btn-success btn-md mybtn'>ADD</button>
+                <button type="submit" className='btn btn-success btn-md mybtn' style={{backgroundColor:'#300090df'}}>ADD</button>
             </form>
             {error && <span className='error-msg'>{error}</span>}
         </div>

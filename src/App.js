@@ -11,7 +11,7 @@ import { Cart } from './Components/Cart';
 import { AddProducts } from './Components/AddProducts';
 import { Cashout } from './Components/Cashout';
 import { SellerDashboard } from './Components/AdminDashboard';
-import { EditProducts } from './Components/EditProduct';
+import { EditProduct } from './Components/EditProduct';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -67,7 +67,7 @@ function App() {
             <Route path="/admin-dashboard" element={<SellerDashboard />} />
 
             {/* Edit product */}
-            <Route path="/edit-product" element={<EditProducts user={user} />} />
+            <Route path="/edit-product" element={<EditProduct user={user} />} />
           </Routes>
         </BrowserRouter>
       </CartContextProvider>
