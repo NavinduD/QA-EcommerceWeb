@@ -96,7 +96,7 @@ export const Navbar = ({ user }) => {
                     <span onClick={handleEditModalOpen}><NavLink to="/" className='navlink'>{user}</NavLink></span>
                     <span><NavLink to="/cartproducts" className='navlink'><Icon icon={cart} /></NavLink></span>
                     <span className='no-of-products'>{totalQty}</span>
-                    <span><button className='seller-btn' onClick={handleSeller}>Seller</button></span>
+                    <span><button className='seller-btn' onClick={handleSeller}>Seller Dashboard</button></span>
                     <span><button className='logout-btn' onClick={handleLogout}>Logout</button></span>
                 </div>
             )}
