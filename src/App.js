@@ -10,6 +10,8 @@ import { CartContextProvider } from './Global/CartContext';
 import { Cart } from './Components/Cart';
 import { AddProducts } from './Components/AddProducts';
 import { Cashout } from './Components/Cashout';
+import { SellerDashboard } from './Components/AdminDashboard';
+import { EditProducts } from './Components/EditProduct';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,6 +62,12 @@ function App() {
 
             {/* Not found */}
             <Route path="*" element={<NotFound />} /> 
+            
+            {/* Admin Dashboard */}
+            <Route path="/admin-dashboard" element={<SellerDashboard />} />
+
+            {/* Edit product */}
+            <Route path="/edit-product" element={<EditProducts user={user} />} />
           </Routes>
         </BrowserRouter>
       </CartContextProvider>

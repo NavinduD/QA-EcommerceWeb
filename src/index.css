@@ -155,7 +155,7 @@ h1 {
 .products-container .product-card .product-name {
     display: block;
     width: 100%;
-    color: #f57224;
+    color: #300090df;
     margin-top: 5px;
 }
 
@@ -166,7 +166,7 @@ h1 {
 }
 
 .products-container .product-card .addcart-btn {
-    background-color: #f57224;
+    background-color: #300090df;
     color: #fff;
     border: hidden;
     cursor: pointer;
@@ -317,3 +317,23 @@ h1 {
 .success-msg .home-link {
     color: #fff;
 }
+
+.hero-section {
+    background-image: url('./images/2262.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 400px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .hero-content {
+    text-align: center;
+    color: white; 
+  }
+  .hero-title {
+    font-size: 48px;
+    border: 1px solid #e4e4e4;
+  }
+  

@@ -5,8 +5,7 @@ import { Icon } from 'react-icons-kit'
 import { ic_add } from 'react-icons-kit/md/ic_add'
 import { ic_remove } from 'react-icons-kit/md/ic_remove'
 import { iosTrashOutline } from 'react-icons-kit/ionicons/iosTrashOutline'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import { auth } from '../Config/Config'
 
 export const Cart = ({ user }) => {
@@ -32,7 +31,7 @@ export const Cart = ({ user }) => {
                     {
                         shoppingCart.length === 0 && <>
                             <div>no items in your cart or slow internet causing trouble (Refresh the page) or you are not logged in</div>
-                            <div><Link to="/">Return to Home page</Link></div>
+                            <div><NavLink to="/">Return to Home page</NavLink></div>
                         </>
                     }
                     {shoppingCart && shoppingCart.map(cart => (
@@ -78,11 +77,11 @@ export const Cart = ({ user }) => {
                             <span>Total Qty</span>
                             <span>{totalQty}</span>
                         </div>
-                        <Link to='cashout' className='cashout-link'>
+                        <NavLink to='/cashout' className='cashout-link'>
                             <button className='btn btn-success btn-md' style={{ marginTop: 5 + 'px' }}>
                                 Cash on delivery
-                        </button>
-                        </Link>
+                            </button>
+                        </NavLink>
                     </div>}
                 </div>
             </>

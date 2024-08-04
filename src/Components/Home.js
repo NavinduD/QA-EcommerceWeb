@@ -3,6 +3,7 @@ import { Navbar } from './Navbar';
 import { Products } from './Products'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../Config/Config'
+import HeroSection from './Hero';
 
 export const Home = ({ user }) => {
 
@@ -20,6 +21,7 @@ export const Home = ({ user }) => {
     return (
         <div className='wrapper'>
             <Navbar user={user} />
+            <HeroSection />
             <Products />
         </div>
     )

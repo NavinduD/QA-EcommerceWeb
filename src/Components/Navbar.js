@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { auth } from '../Config/Config'
 import { Icon } from 'react-icons-kit'
 import { cart } from 'react-icons-kit/entypo/cart'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { CartContext } from '../Global/CartContext'
 
 export const Navbar = ({ user }) => {
@@ -18,7 +18,10 @@ export const Navbar = ({ user }) => {
             navigate('/login');
         })
     }
-
+    // Navigate to Seller dashboard
+    const handleSeller = () => {
+        navigate('/admin-dashboard')
+    }
     return (
         <div className='navbox'>
             <div className='leftside'>
@@ -29,10 +32,10 @@ export const Navbar = ({ user }) => {
                 <span><Link to="login" className='navlink'>LOGIN</Link></span>
             </div>}
             {user && <div className='rightside'>
-                <span><Link to="/" className='navlink'>{user}</Link></span>
-                <span><Link to="cartproducts" className='navlink'><Icon icon={cart} /></Link></span>
+                <span><NavLink to="/" className='navlink'>{user}</NavLink></span>
+                <span><NavLink to="/cartproducts" className='navlink'><Icon icon={cart} /></NavLink></span>
                 <span className='no-of-products'>{totalQty}</span>
-                <span><button className='seller-btn'>Seller</button></span>
+                <span><button className='seller-btn' onClick={handleSeller}>Seller</button></span>
                 <span><button className='logout-btn' onClick={handleLogout}>Logout</button></span>
             </div>}
         </div>

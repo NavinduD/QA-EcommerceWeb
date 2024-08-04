@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, getDoc,getDocs, collection, onSnapshot,setDoc,doc } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getFirestore, getDoc,getDocs, collection, onSnapshot,setDoc,doc, deleteDoc } from "firebase/firestore";
+import { getStorage,ref } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD4ZhPSvdbuWYT4aaww2PFUfWLCpZ8pkns",
@@ -19,4 +19,4 @@ const auth = getAuth();
 const db = getFirestore(app);
 const storage = getStorage(app, "gs://ecommerceqa-e5fa7.appspot.com");
 
-export { auth, db, storage,setDoc, getDoc, getDocs, collection, onSnapshot,doc, createUserWithEmailAndPassword, signInWithEmailAndPassword }
+export { auth, db, storage, ref, setDoc, getDoc, getDocs, collection, onSnapshot,doc, deleteDoc, createUserWithEmailAndPassword, signInWithEmailAndPassword }

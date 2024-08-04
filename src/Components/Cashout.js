@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { auth, db } from '../Config/Config'
+import { auth, db, getDoc, doc } from '../Config/Config'
 import { CartContext } from '../Global/CartContext'
 import { Navbar } from './Navbar';
 import { useNavigate } from 'react-router-dom'
@@ -21,7 +21,9 @@ export const Cashout = (props) => {
     useEffect(() => {
         auth.onAuthStateChanged(user => {
             if (user) {
-                db.collection('SignedUpUsersData').doc(user.uid).onSnapshot(snapshot => {
+                const userDocRef = doc(db, 'SignedUpUsersData', user.uid);
+
+                getDoc(userDocRef).then(snapshot => {
                     setName(snapshot.data().Name);
                     setEmail(snapshot.data().Email);
                 })
@@ -77,7 +79,7 @@ export const Cashout = (props) => {
                     <br />
                     <label htmlFor="Cell No">Cell No</label>
                     <input type="number" className='form-control' required
-                        onChange={(e) => setCell(e.target.value)} value={cell} placeholder='eg 03123456789' />
+                        onChange={(e) => setCell(e.target.value)} value={cell} placeholder='eg 07123456789' />
                     <br />
                     <label htmlFor="Delivery Address">Delivery Address</label>
                     <input type="text" className='form-control' required
@@ -91,7 +93,7 @@ export const Cashout = (props) => {
                     <input type="number" className='form-control' required
                         value={totalQty} disabled />
                     <br />
-                    <button type="submit" className='btn btn-success btn-md mybtn'>SUBMIT</button>
+                    <button type="submit" className='btn btn-success btn-md mybtn' style={{backgroundColor:'#300090df'}}>SUBMIT</button>
                 </form>
                 {error && <span className='error-msg'>{error}</span>}
             </div>

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { ref, db,setDoc,collection,doc, storage, auth } from '../Config/Config'
+import { ref, db,setDoc,collection,doc, storage } from '../Config/Config'
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
+import { updateDoc } from 'firebase/firestore';
 
-export const AddProducts = () => {
+export const EditProducts = (product) => {
 
-    const [productName, setProductName] = useState('');
-    const [productPrice, setProductPrice] = useState(0);
+    const [productName, setProductName] = useState(product.ProductName);
+    const [productPrice, setProductPrice] = useState(product.ProductPrice);
     const [productImg, setProductImg] = useState(null);
     const [error, setError] = useState('');
 
@@ -26,8 +27,8 @@ export const AddProducts = () => {
         }
     }
 
-    // add product
-    const addProduct = async (e) => {
+    // Edit product
+    const editProduct = async (e) => {
         e.preventDefault();
       
         try {
@@ -51,17 +52,20 @@ export const AddProducts = () => {
               // Handle successful upload completion
               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
               console.log('File available at', downloadURL);
-                
-              const user = auth.currentUser;
-
+      
               // Add product data to Firestore
               const productRef = collection(db, 'Products');
-              await setDoc(doc(productRef), {
+              const productData = {
                 ProductName: productName,
                 ProductPrice: Number(productPrice),
-                ProductImg: downloadURL,
-                CreatedBy: user.uid
-              });
+              };
+
+              // Update ProductImg only if a new image is selected
+              if (productImg) {
+                productData.ProductImg = downloadURL;
+              }
+
+              await updateDoc(doc(productRef, product.id), productData);
       
               // Clear form fields and error message on success
               setProductName('');
@@ -84,9 +88,9 @@ export const AddProducts = () => {
     return (
         <div className='container'>
             <br />
-            <h2>ADD PRODUCTS</h2>
+            <h2>EDIT PRODUCTS</h2>
             <hr />
-            <form autoComplete="off" className='form-group' onSubmit={addProduct}>
+            <form autoComplete="off" className='form-group' onSubmit={editProduct}>
                 <label htmlFor="product-name">Product Name</label>
                 <input type="text" className='form-control' required
                     onChange={(e) => setProductName(e.target.value)} value={productName} />
@@ -99,7 +103,7 @@ export const AddProducts = () => {
                 <input type="file" className='form-control' id="file" required
                     onChange={productImgHandler} />
                 <br />
-                <button type="submit" className='btn btn-success btn-md mybtn'>ADD</button>
+                <button type="submit" className='btn btn-success btn-md mybtn'>Save</button>
             </form>
             {error && <span className='error-msg'>{error}</span>}
         </div>
