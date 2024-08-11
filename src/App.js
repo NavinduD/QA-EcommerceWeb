@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { ProductsContextProvider } from './Global/ProductsContext';
-import { Home } from './Components/Home';
+import { ProductsContextProvider } from './Global/ProductsContext.js';
+import { Home } from './Components/Home.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Signup } from './Components/Signup';
-import { Login } from './Components/Login';
-import { NotFound } from './Components/NotFound';
-import { auth, db, doc, getDoc } from './Config/Config';
-import { CartContextProvider } from './Global/CartContext';
-import { Cart } from './Components/Cart';
-import { AddProducts } from './Components/AddProducts';
-import { Cashout } from './Components/Cashout';
-import { SellerDashboard } from './Components/AdminDashboard';
-import { EditProduct } from './Components/EditProduct';
+import { Signup } from './Components/Signup.js';
+import { Login } from './Components/Login.js';
+import { NotFound } from './Components/NotFound.js';
+import { auth, db, doc, getDoc } from './Config/Config.js';
+import { CartContextProvider } from './Global/CartContext.js';
+import { Cart } from './Components/Cart.js';
+import { AddProducts } from './Components/AddProducts.js';
+import { Cashout } from './Components/Cashout.js';
+import { SellerDashboard } from './Components/AdminDashboard.js';
+import { EditProduct } from './Components/EditProduct.js';
 
 function App() {
   const [user, setUser] = useState(null);

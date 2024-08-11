@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { auth, db, createUserWithEmailAndPassword, setDoc, doc } from '../Config/Config'
 import { useNavigate, NavLink } from 'react-router-dom';
 
-export const Signup = (props) => {
+export const Signup = () => {
 
     // defining state
     const [name, setName] = useState('');
@@ -14,6 +14,20 @@ export const Signup = (props) => {
     // signup
     const signup = async (e) => {
       e.preventDefault();
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address');
+        return;
+      }
+
+      // Validate password strength
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        setError('Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+        return;
+      }
     
       try {
         await createUserWithEmailAndPassword(auth, email, password)
@@ -32,6 +46,7 @@ export const Signup = (props) => {
                 setEmail('');
                 setPassword('');
                 setError('');
+                alert('Successfully created the account!!')
                 navigate('/login');
               })
               .catch((error) => {
@@ -61,15 +76,15 @@ export const Signup = (props) => {
           <form autoComplete="off" className='form-group' onSubmit={signup}>   
     
             <label htmlFor="name">Name</label>
-            <input type="text" className='form-control' required onChange={(e) => setName(e.target.value)} value={name} />
+            <input type="text" data-testid='name' className='form-control' required onChange={(e) => setName(e.target.value)} value={name} Required/>
             <br />
             <label htmlFor="email">Email</label>
-            <input type="email" className='form-control' required onChange={(e) => setEmail(e.target.value)} value={email} />
+            <input type="email" data-testid='email' className='form-control' required onChange={(e) => setEmail(e.target.value)} value={email} Required/>
             <br />
             <label htmlFor="password">Password</label>
-            <input type="password" className='form-control' required onChange={(e) => setPassword(e.target.value)} value={password} />
+            <input type="password" data-testid='password' className='form-control' required onChange={(e) => setPassword(e.target.value)} value={password} Required/>
             <br />
-            <button type="submit" className='btn btn-success btn-md mybtn' style={{backgroundColor: "#300090df"}}>SUBMIT</button>
+            <button type="submit" data-testid='submit' className='btn btn-success btn-md mybtn' style={{backgroundColor: "#300090df"}}>SUBMIT</button>
           </form>
           {error && <span className='error-msg'>{error}</span>}
           <br />

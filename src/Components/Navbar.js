@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import logo from '../images/logo.png'
 import { Link } from 'react-router-dom'
-import { auth } from '../Config/Config'
+import { auth, doc, db, updateDoc, getDoc } from '../Config/Config.js'
 import { Icon } from 'react-icons-kit'
 import { cart } from 'react-icons-kit/entypo/cart'
 import { useNavigate, NavLink } from 'react-router-dom';
-import { CartContext } from '../Global/CartContext'
+import { CartContext } from '../Global/CartContext.js'
 import { Modal, Box, Typography, TextField, Button, Alert } from '@mui/material';
-import { doc, db, updateDoc } from '../Config/Config'
 import { sendPasswordResetEmail, deleteUser } from 'firebase/auth';
 
 export const Navbar = ({ user }) => {
@@ -20,11 +19,35 @@ export const Navbar = ({ user }) => {
         password: ''
     });
 
+    // Fetch user data from Firestore on component mount
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const user = auth.currentUser;
+            if (user && user.uid) {
+                try {
+                    const userDocRef = doc(db, 'SignedUpUsersData', user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+                    if (userDocSnap.exists()) {
+                        const userData = userDocSnap.data();
+                        setEditUserData({
+                            username: userData.Name,
+                            email: userData.Email,
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data: ", error.message);
+                }
+            }
+        };
+
+        fetchUserData();
+    }, [user]);
+
     // handle logout
     const handleLogout = () => {
-        auth.signOut().then(() => {
-            navigate('/login');
-        });
+        auth.signOut();
+        navigate('/login');
+    
     };
 
     // Navigate to Seller dashboard
@@ -44,19 +67,23 @@ export const Navbar = ({ user }) => {
 
     // Handle reset password
     const handleResetPassword = async () => {
-        const user = auth.currentUser;
-        await sendPasswordResetEmail(auth, user.email);
-        alert("Password reset email sent. Please check your inbox.");
-        handleEditModalClose();
+        try {
+            const user = auth.currentUser; 
+            await sendPasswordResetEmail(auth, user.email);
+            alert("Password reset email sent. Please check your inbox.");
+            handleEditModalClose();
+          } catch (error) {
+            console.error("Error sending password reset email:", error);
+          }
     }
 
     // Handle delete account
     const handleDelete = async () => {
         const user = auth.currentUser;
         if (user) {
-            await deleteUser(user);
-            Alert('User deleted successfully');
+            await deleteUser(user.uid);
         };
+        alert('User deleted successfully');
         handleEditModalClose();
     }
 
@@ -124,8 +151,15 @@ export const Navbar = ({ user }) => {
                         fullWidth
                         margin="normal"
                     />
+                    <TextField
+                        label="Email"
+                        value={editUserData.email}
+                        fullWidth
+                        margin="normal"
+                        disabled
+                    />
                     <Box display={'flex'} flexDirection={'column'} gap={'10px'} paddingBottom={'10px'}>
-                        <Button onClick={handleResetPassword} variant="outlined" color='success' fullWidth>Reset Password</Button>
+                        <Button onClick={handleResetPassword} variant="outlined" color='success' data-testid='reset' fullWidth>Reset Password</Button>
                         <Button onClick={handleDelete} variant="outlined" color='error' fullWidth>Delete Account</Button>
                     </Box>
                     <Box display="flex" justifyContent="flex-end" gap={'10px'}>

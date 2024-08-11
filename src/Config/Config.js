@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getFirestore, getDoc,getDocs, collection, onSnapshot,setDoc,doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { getStorage,ref } from "firebase/storage";
 
@@ -19,4 +19,4 @@ const auth = getAuth();
 const db = getFirestore(app);
 const storage = getStorage(app, "gs://ecommerceqa-e5fa7.appspot.com");
 
-export { auth, db, storage, ref, setDoc,updateDoc, getDoc, getDocs, collection, onSnapshot,doc, deleteDoc, createUserWithEmailAndPassword, signInWithEmailAndPassword }
+export { auth, db, storage, ref, sendPasswordResetEmail, setDoc,updateDoc, getDoc, getDocs, collection, onSnapshot,doc, deleteDoc, createUserWithEmailAndPassword, signInWithEmailAndPassword }

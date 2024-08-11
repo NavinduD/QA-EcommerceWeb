@@ -23,7 +23,7 @@ export const Login = (props) => {
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.error('Login failed:', error);
+            // console.error('Login failed:', error);
             setError(errorMessage);
           });
       };
@@ -36,14 +36,14 @@ export const Login = (props) => {
             <br />
             <form autoComplete="off" className='form-group' onSubmit={login}>
                 <label htmlFor="email">Email</label>
-                <input type="email" className='form-control' required
+                <input type="email" data-testid='email' className='form-control' required
                     onChange={(e) => setEmail(e.target.value)} value={email} />
                 <br />
                 <label htmlFor="password">Password</label>
-                <input type="password" className='form-control' required
+                <input type="password" data-testid='password' className='form-control' required
                     onChange={(e) => setPassword(e.target.value)} value={password} />
                 <br />
-                <button type="submit" className='btn btn-success btn-md mybtn' style={{backgroundColor: "#300090df"}}>LOGIN</button>
+                <button type="submit" data-testid='btn' className='btn btn-success btn-md mybtn' style={{backgroundColor: "#300090df"}}>LOGIN</button>
             </form>
             {error && <span className='error-msg'>{error}</span>}
             <br/>
